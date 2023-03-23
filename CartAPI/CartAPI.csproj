@@ -16,4 +16,13 @@
     <Folder Include="Presentation\ViewModel\Product\View\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Migration.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
