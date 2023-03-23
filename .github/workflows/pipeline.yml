@@ -23,5 +23,5 @@ jobs:
           Install-DBOPackage Migration.zip -Variables @{ connectionString = $env:ConnectionString }
           cd C:\inetpub\wwwroot\cart-api
           Remove-Item -Recurse -Force -Exclude appsettings.json *
-          Copy-Item -Recurse -Force -Exclude appsettings.json C:\actions-runner\_work\FELL-CART\FELL-CART\app\* .
+          #Copy-Item -Recurse -Force -Exclude appsettings.json C:\actions-runner\_work\FELL-CART\FELL-CART\app\* ./
           Remove-Item -Recurse -Force -Exclude appsettings.json C:\actions-runner\_work\*
