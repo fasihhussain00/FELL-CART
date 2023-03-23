@@ -7,18 +7,19 @@ jobs:
     runs-on: self-hosted
     environment: production
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Publish
-      run: dotnet publish -c Release -o C:\actions-runner\_work\FELL-CART\FELL-CART\app
-    - name: Deploy
-      env:
-        ConnectionString: ${{ secrets.DB_CONNECTION_STRING }}
-      run: |
-        powershell
-        cd C:\actions-runner\_work\FELL-CART\FELL-CART\app
-        Install-DBOPackage Migration.zip -Variables @{ connectionString = $env:ConnectionString }
-        cd C:\inetpub\wwwroot\cart-api
-        Remove-Item -Recurse -Force -Exclude appsettings.json *
-        Copy-Item -Recurse -Force -Exclude appsettings.json C:\actions-runner\_work\FELL-CART\FELL-CART\app\* .
-        Remove-Item -Recurse -Force -Exclude appsettings.json C:\actions-runner\_work\*
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Publish
+        run: dotnet publish -c Release -o C:\actions-runner\_work\FELL-CART\FELL-CART\app
+      - name: Deploy
+        shell: pwsh
+        env:
+          ConnectionString: ${{ secrets.DB_CONNECTION_STRING }}
+        run: |
+          powershell
+          cd C:\actions-runner\_work\FELL-CART\FELL-CART\app
+          Install-DBOPackage Migration.zip -Variables @{ connectionString = $env:ConnectionString }
+          cd C:\inetpub\wwwroot\cart-api
+          Remove-Item -Recurse -Force -Exclude appsettings.json *
+          Copy-Item -Recurse -Force -Exclude appsettings.json C:\actions-runner\_work\FELL-CART\FELL-CART\app\* .
+          Remove-Item -Recurse -Force -Exclude appsettings.json C:\actions-runner\_work\*
