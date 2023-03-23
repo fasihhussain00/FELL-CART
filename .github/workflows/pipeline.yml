@@ -26,12 +26,3 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           source: ./publish
           target: 'C:\inetpub\wwwroot\cart-api'
-
-      - name: Execute PowerShell script
-        uses: microsoft/powershell@v1
-        with:
-          pwsh: true
-          inlineScript: |
-            $connectionString = ${{ secrets.DB_CONNECTION_STRING }}
-            cd C:\inetpub\wwwroot\cart-api
-            Install-DBOPackage Migration.zip -Variables @{ connectionString = $connectionString }
