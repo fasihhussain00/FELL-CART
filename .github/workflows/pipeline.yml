@@ -11,8 +11,6 @@ jobs:
         uses: actions/checkout@v2
       - name: Publish
         run: dotnet publish -c Release -o C:\actions-runner\_work\FELL-CART\FELL-CART\app
-      - name: Check module
-        run: pwsh -Command "Get-Module dbops"
       - name: Install dbops module
         run: pwsh -Command "Install-Module dbops -Force"
       - name: Deploy
