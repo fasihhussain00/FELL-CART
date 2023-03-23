@@ -4,25 +4,19 @@ on:
       - dbup-integration
 jobs:
   deploy:
-    runs-on: windows-latest
+    runs-on: self-hosted
     environment: production
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: "5.0"
-
-      - name: Publish app
-        run: dotnet publish -c Release -o publish
-
-      - name: Copy files to server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          source: ./publish
-          target: 'C:\inetpub\wwwroot\cart-api'
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Publish
+      run: dotnet publish -c Release -o $(Build.ArtifactStagingDirectory)/app
+    - name: Deploy
+      env:
+        ConnectionString: ${{ secrets.DB_CONNECTION_STRING }}
+      run: |
+        cd $(Build.ArtifactStagingDirectory)/app
+        Install-DBOPackage Migration.zip -Variables @{ connectionString = $env:ConnectionString }
+        cd C:\inetpub\wwwroot\cart-api
+        Remove-Item -Recurse -Force -Exclude appsettings.json *
+        Copy-Item -Recurse -Force -Exclude appsettings.json $(Build.ArtifactStagingDirectory)/app/* .
