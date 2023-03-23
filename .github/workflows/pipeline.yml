@@ -16,7 +16,7 @@ jobs:
         ConnectionString: ${{ secrets.DB_CONNECTION_STRING }}
       run: |
         cd C:\actions-runner\_work\FELL-CART\FELL-CART\app
-        Install-DBOPackage Migration.zip -Variables @{ connectionString = $env:ConnectionString }
+        powershell Install-DBOPackage Migration.zip -Variables @{ connectionString = $env:ConnectionString }
         cd C:\inetpub\wwwroot\cart-api
         Remove-Item -Recurse -Force -Exclude appsettings.json *
         Copy-Item -Recurse -Force -Exclude appsettings.json C:\actions-runner\_work\FELL-CART\FELL-CART\app\* .
