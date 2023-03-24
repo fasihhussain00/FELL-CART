@@ -20,11 +20,15 @@ jobs:
         env:
           ConnectionString: ${{ secrets.DB_CONNECTION_STRING }}
         run: |
+          Import-Module WebAdministration
           cd C:\actions-runner\_work\FELL-CART\FELL-CART\CartApi
           Install-DBOPackage Migration.zip -Variables @{ connectionString = $env:ConnectionString }
           dotnet publish -c Release -o .\app
+          Stop-WebAppPool -Name "cart-api"
+          Start-Sleep -Seconds 5
           Remove-Item -Recurse -Force -Exclude appsettings.json C:\inetpub\wwwroot\cart-api\*
           Copy-Item -Recurse -Force -Exclude appsettings.json .\app\* C:\inetpub\wwwroot\cart-api\
+          Start-WebAppPool -Name "cart-api"
           cd ..
           git checkout HEAD
 
