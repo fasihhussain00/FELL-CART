@@ -25,3 +25,6 @@ jobs:
           dotnet publish -c Release -o .\app
           Remove-Item -Recurse -Force -Exclude appsettings.json C:\inetpub\wwwroot\cart-api\*
           Copy-Item -Recurse -Force -Exclude appsettings.json .\app\* C:\inetpub\wwwroot\cart-api\
+          cd ..
+          git checkout HEAD
+
