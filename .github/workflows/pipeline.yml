@@ -9,8 +9,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Publish
-        run: dotnet publish -c Release -o C:\actions-runner\_work\FELL-CART\FELL-CART\app
       - name: Install dbops module
         run: pwsh -Command "Install-Module dbops -Force"
       - name: Deploy
@@ -19,9 +17,6 @@ jobs:
           ConnectionString: ${{ secrets.DB_CONNECTION_STRING }}
         run: |
           powershell
-          cd C:\actions-runner\_work\FELL-CART\FELL-CART\app
+          cd C:\actions-runner\_work\FELL-CART\FELL-CART\CartAPI
           Install-DBOPackage Migration.zip -Variables @{ connectionString = $env:ConnectionString }
-          cd C:\inetpub\wwwroot\cart-api
-          Remove-Item -Recurse -Force -Exclude appsettings.json *
-          #Copy-Item -Recurse -Force -Exclude appsettings.json C:\actions-runner\_work\FELL-CART\FELL-CART\app\* ./
-          Remove-Item -Recurse -Force -Exclude appsettings.json C:\actions-runner\_work\*
+          dotnet publish -c Release -o C:\inetpub\wwwroot\cart-api
