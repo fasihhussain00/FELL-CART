@@ -7,28 +7,26 @@ jobs:
     runs-on: self-hosted
     environment: production
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-            clean: false
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-      - name: Install dbops module
-        run: pwsh -Command "Install-Module dbops -Force"
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+            dotnet-version: 5.0
+
+      - name: Build
+        run: dotnet build --configuration Release .\cart-api-build
+
+      - name: Publish
+        run: |
+            dotnet publish -c Release -o cart-api-publish .\cart-api-build
 
       - name: Deploy
         shell: pwsh
         env:
           ConnectionString: ${{ secrets.DB_CONNECTION_STRING }}
         run: |
-          Import-Module WebAdministration
-          cd C:\actions-runner\_work\FELL-CART\FELL-CART\CartApi
-          Install-DBOPackage Migration.zip -Variables @{ connectionString = $env:ConnectionString }
-          dotnet publish -c Release -o .\app
           Stop-WebAppPool -Name "cart-api"
-          Start-Sleep -Seconds 5
-          Remove-Item -Recurse -Force -Exclude appsettings.json C:\inetpub\wwwroot\cart-api\*
           Copy-Item -Recurse -Force -Exclude appsettings.json .\app\* C:\inetpub\wwwroot\cart-api\
           Start-WebAppPool -Name "cart-api"
-          cd ..
-          git checkout HEAD
-
